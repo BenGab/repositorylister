@@ -5,7 +5,7 @@ import vueResource from 'vue-resource'
 import App from './App'
 
 
-Vue.use(vueResource)
+Vue.use(vueResource);
 
 /* eslint-disable no-new */
 new Vue({
