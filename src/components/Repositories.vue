@@ -2,11 +2,11 @@
 	<div class="repositories">
 		<h1>{{title}}</h1>
         <div class="container">
-            <div class="row" v-for="repositori in repositoriPage">
+            <div class="row repositori-item" v-for="repositori in repositoriPage">
                 <div class="col-md-4">
                     {{repositori.name}}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     {{repositori.description}}
                 </div>
                 <div class="col-md-2">
@@ -82,11 +82,31 @@
         },
         created: function () {
             this.$http.get('https://api.github.com/users/addyosmani/repos')
-                .then(function(response) {
+                .then((response) => {
                     this.repositories = response.data
                     this.pages = Math.ceil(this.repositories.length / this.itemsPerPage);
+                }, (error) => {
+                    alert('There was an error during repository request');
                 });
 
         }
     }
 </script>
+<style>
+    .repositori-item {
+        height: 70px;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+
+        align-items: center;
+        margin-top: 10px;
+        border: 1px solid lightskyblue;
+        font-size: 16px;
+        text-align: left;
+    }
+</style>
