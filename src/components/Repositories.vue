@@ -10,6 +10,13 @@
             return {
                 title: 'Repository list of Addy Osmani'
             }
+        },
+        created: function () {
+            this.$http.get('https://api.github.com/users/addyosmani/repos')
+                .then(function(response) {
+                    console.log(response.body)
+                })
+
         }
     }
 </script>
