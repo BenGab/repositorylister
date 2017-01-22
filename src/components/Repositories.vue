@@ -16,8 +16,14 @@
         </div>
         <nav aria-label="...">
             <ul class="pagination pagination-lg">
-                <li class="page-item" v-bind:class="isActive(page)" v-for="page in pages">
+                <li class="page-item" v-if="stepperVisibility.prev">
+                    <a class="page-link" v-on:click="onPageStep(true)" href="#">Previous</a>
+                </li>
+                <li class="page-item" v-bind:class="isActive(page)" v-for="page in pageList">
                     <a class="page-link" href="#" v-on:click="doPage(page)">{{page}}</a>
+                </li>
+                 <li class="page-item" v-if="stepperVisibility.next">
+                    <a class="page-link" v-on:click="onPageStep(false)" href="#">Next</a>
                 </li>
             </ul>
         </nav>
@@ -36,7 +42,8 @@
             return {
                 title: 'Repository list of Addy Osmani',
                 repositories: [],
-                currentPage: 1
+                currentPage: 1,
+                pages: 1
             }
         },
         methods: {
@@ -45,6 +52,11 @@
             },
             isActive: function(page) {
                 return page === this.currentPage ? 'active' : '';
+            },
+            onPageStep: function(isPrev) {
+                let stepNumber = isPrev ? -1 : 1;
+                let nextPage = this.currentPage + stepNumber;
+                this.doPage(nextPage);
             }
         },
         computed: {
@@ -53,21 +65,26 @@
                 let end = start + this.itemsPerPage;
                 return this.repositories.slice(start, end);
             },
-            pages: function() {
+            pageList: function() {
                 var pagesResult = [];
-                var pages = Math.ceil(this.repositories.length / this.itemsPerPage);
-                for(let i = 0; i != pages; i++) {
-                    pagesResult.push(i);
+                for(let i = 1; i <= this.pages; i++) {
+                    pagesResult.push(i);                
                 }
 
-                return pages;
-            }   
+                return pagesResult;
+            },
+            stepperVisibility: function() {
+                return {
+                    next: this.currentPage < this.pages,
+                    prev: this.currentPage > 1
+                };
+            } 
         },
         created: function () {
             this.$http.get('https://api.github.com/users/addyosmani/repos')
                 .then(function(response) {
                     this.repositories = response.data
-                    console.log(response.body);
+                    this.pages = Math.ceil(this.repositories.length / this.itemsPerPage);
                 });
 
         }
